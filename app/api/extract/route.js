@@ -2,20 +2,26 @@ export const runtime = 'nodejs'
 
 export async function POST(req) {
 try {
-const formData = await req.formData()
-const file = formData.get('file')
+const body = await req.json()
+const { imageBase64, mimeType } = body || {}
 
-if (!file) {
-return Response.json({ error: 'No file uploaded' }, { status: 400 })
+if (!imageBase64) {
+return Response.json({ error: 'No image received' }, { status: 400 })
 }
 
 return Response.json({
 success: true,
-message: 'Upload received successfully'
+data: {
+contactName: '',
+vehicle: '',
+package: '',
+stockNumber: '',
+date: '',
+notes: `Image received. Mime type: ${mimeType || 'unknown'}`
+}
 })
 } catch (err) {
-console.error(err)
+console.error('Extract route error:', err)
 return Response.json({ error: 'Upload failed' }, { status: 500 })
 }
 }
-
